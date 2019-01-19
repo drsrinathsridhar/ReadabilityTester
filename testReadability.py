@@ -1,5 +1,6 @@
 import os, sys, argparse, glob
 import utils
+import numpy as np
 
 Parser = argparse.ArgumentParser(description='Script to evaluate readability of PDF or text documents.')
 # --------------------
@@ -17,11 +18,17 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         Parser.print_help()
         exit()
-
     Args = Parser.parse_args()
 
     if Args.input:
         utils.processFile(Args.input, verbose=Args.verbose)
     elif Args.directory:
         AllScores = utils.processDir(Args.directory, verbose=Args.verbose)
-        print('Scores:', AllScores)
+        print('[ INFO ]: Scores -', AllScores)
+        OutputPath = Args.directory + 'readability.npz'
+        utils.saveNPZ(np.asarray(AllScores), OutputPath)
+        print('[ INFO ]: Saved to', OutputPath)
+
+        # Test = utils.loadNPZ(OutputPath)
+        # print(Test)
+        # print(Test == np.asarray(AllScores))

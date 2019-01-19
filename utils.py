@@ -4,10 +4,17 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 import string, nltk, pyphen, glob, os
+import numpy as np
 
 nltk.download('punkt')
 pyphen.language_fallback('en')
 WordDic = pyphen.Pyphen(lang='en')
+
+def saveNPZ(Array, OutputFile):
+    np.savez_compressed(OutputFile, array1=Array)
+
+def loadNPZ(InputFile):
+    return np.load(InputFile)['array1']
 
 def computeNumSyllables(word):
     Hyphs = list(WordDic.iterate(word))

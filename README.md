@@ -5,8 +5,9 @@ Scripts to estimate the readability of text or PDF files. Currently only support
 - nltk
 - pyphen
 - pdfminer.six
-- Optional: matplotlib
-- Optional: numpy
+- numpy
+- matplotlib (optional)
+- [wget][2] (optional)
 
 ## Usage
 Run the following command for a sample. Use the `-h` flag for usage instructions.
@@ -23,9 +24,9 @@ You can process an entire directory of text and/or PDF files and obtain summary 
 The readability scores for all files are written as an numpy array `readability.npz` in `<DIRECTORY_PATH>`.
 
 ## Helper Scripts
-1. To download a directory from a remote URL use:
+1. To download a directory with supported files from a remote URL use:
   
-    `downloadURL.py -u URL`
+    `downloadURL.py -u <URL> -o <OUTPUT_DIR>`
 
 
 # Contact
@@ -33,3 +34,4 @@ Srinath Sridhar
 [ssrinath@cs.stanford.edu][1]
 
 [1]: mailto:ssrinath@cs.stanford.edu
+[2]: https://pypi.org/project/wget/
