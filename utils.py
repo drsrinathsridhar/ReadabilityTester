@@ -3,7 +3,7 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
-import string, nltk, pyphen
+import string, nltk, pyphen, glob, os
 
 nltk.download('punkt')
 pyphen.language_fallback('en')
@@ -15,10 +15,11 @@ def computeNumSyllables(word):
         return 1
     return len(Hyphs)
 
-def computeFKScore(DataString):
+def computeFKScore(DataString, verbose=0):
     SentTokens = nltk.tokenize.sent_tokenize(DataString)
     nSent = len(SentTokens)
-    print('[ INFO ]: Number of sentences is', nSent)
+    if verbose > 0:
+        print('[ INFO ]: Number of sentences is', nSent)
 
     WordTokens = []
     for Sent in SentTokens:
@@ -28,12 +29,14 @@ def computeFKScore(DataString):
     # print('[ INFO ]: Punctuation dictionary - ', Punctuation)
     WordTokens = [Token for Token in WordTokens if Token not in Punctuation]
     nWords = len(WordTokens)
-    print('[ INFO ]: Number of words is', nWords)
+    if verbose > 0:
+        print('[ INFO ]: Number of words is', nWords)
 
     nSyll = 0
     for Word in WordTokens:
         nSyll = nSyll + computeNumSyllables(Word)
-    print('[ INFO ]: Number of syllables is', nSyll)
+    if verbose > 0:
+        print('[ INFO ]: Number of syllables is', nSyll)
 
     FKScore = 206.835 - (1.015 * (nWords / nSent)) - (84.6 * (nSyll / nWords))
     if FKScore >= 122.22:
@@ -59,3 +62,46 @@ def pdf2Text(fname, pages=None):
         text = output.getvalue()
         output.close
     return text
+
+SupportedExtensions = ['*.txt', '*.text', '*.pdf', '*.dat']
+
+def processFile(FilePath, Test='FK', verbose=0):
+    if os.path.exists(FilePath) == False:
+        raise Exception('[ ERR ]: File does not exist', FilePath + '. Aborting.')
+
+    # Check if format is PDF or TXT
+    _, Extension = os.path.splitext(FilePath)
+    if '*' + Extension not in SupportedExtensions:
+        raise Exception('[ ERR ]: Unsupported extension', Extension + '. Aborting.')
+
+    # Get file contents as a string
+    DataString = ''
+    if Extension == '.pdf':
+        DataString = pdf2Text(FilePath) # , pages=[])
+    else: # Assuming text contents
+        with open(FilePath, 'r') as File:
+            DataString = File.read()
+
+    Score = 0
+    if Test == 'FK':
+        if verbose > 0:
+            print('[ INFO ]: Running Flesch-Kincaid Readability test on', FilePath)
+        Score = computeFKScore(DataString, verbose)
+        if verbose > 0:
+            print('[ INFO ]: Flesch-Kincaid score for input is', Score)
+
+    return Score
+
+def processDir(DirPath, Test='FK', verbose=0):
+    AllFiles = [glob.glob(os.path.join(DirPath, e)) for e in SupportedExtensions]
+    AllSupportedFiles = [item for sublist in AllFiles for item in sublist]
+
+    AllScores = []
+    Ctr = 1
+    for File in AllSupportedFiles:
+        print('[ INFO ]: Processing file ' + File + ' (' + str(Ctr) + ' / ' + str(len(AllSupportedFiles)) + ')')
+        Score = processFile(File, Test, verbose)
+        AllScores.append(Score)
+        Ctr = Ctr + 1
+
+    return AllScores
