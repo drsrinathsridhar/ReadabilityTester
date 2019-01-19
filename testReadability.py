@@ -21,7 +21,8 @@ if __name__ == '__main__':
     Args = Parser.parse_args()
 
     if Args.input:
-        utils.processFile(Args.input, verbose=Args.verbose)
+        Score = utils.processFile(Args.input, verbose=Args.verbose)
+        print('[ INFO ]: Readability score is', Score)
     elif Args.directory:
         AllScores = utils.processDir(Args.directory, verbose=Args.verbose)
         print('[ INFO ]: Scores -', AllScores)

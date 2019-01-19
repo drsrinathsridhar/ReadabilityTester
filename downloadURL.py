@@ -29,4 +29,4 @@ if __name__ == '__main__':
         if '*' + Extension in utils.SupportedExtensions:
             print(File)
             wget.download(Args.url + '/' + File, Args.out_dir)
-            break
+            print('\n', end='')
