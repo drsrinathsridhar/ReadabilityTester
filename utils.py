@@ -16,6 +16,18 @@ def saveNPZ(Array, OutputFile):
 def loadNPZ(InputFile):
     return np.load(InputFile)['array1']
 
+def saveListTxt(Array, OutputFile):
+    with open(OutputFile, 'w') as f:
+        for item in Array:
+            f.write('%s\n' % item)
+
+def loadListTxt(InputFile):
+    Array = []
+    with open(InputFile, 'r') as f:
+        Array = f.read().splitlines()
+
+    return Array
+
 def computeNumSyllables(word):
     Hyphs = list(WordDic.iterate(word))
     if len(Hyphs) == 0:
@@ -102,13 +114,16 @@ def processFile(FilePath, Test='FK', verbose=0):
 def processDir(DirPath, Test='FK', verbose=0):
     AllFiles = [glob.glob(os.path.join(DirPath, e)) for e in SupportedExtensions]
     AllSupportedFiles = [item for sublist in AllFiles for item in sublist]
+    AllSupportedFiles.sort()
 
     AllScores = []
     Ctr = 1
+    AllFiles = []
     for File in AllSupportedFiles:
         print('[ INFO ]: Processing file ' + File + ' (' + str(Ctr) + ' / ' + str(len(AllSupportedFiles)) + ')')
         Score = processFile(File, Test, verbose)
         AllScores.append(Score)
+        AllFiles.append(os.path.basename(File))
         Ctr = Ctr + 1
 
-    return AllScores
+    return AllScores, AllFiles

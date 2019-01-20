@@ -24,12 +24,17 @@ if __name__ == '__main__':
         Score = utils.processFile(Args.input, verbose=Args.verbose)
         print('[ INFO ]: Readability score is', Score)
     elif Args.directory:
-        AllScores = utils.processDir(Args.directory, verbose=Args.verbose)
+        AllScores, AllFiles = utils.processDir(Args.directory, verbose=Args.verbose)
         print('[ INFO ]: Scores -', AllScores)
-        OutputPath = Args.directory + 'readability.npz'
-        utils.saveNPZ(np.asarray(AllScores), OutputPath)
-        print('[ INFO ]: Saved to', OutputPath)
+        OutputNP = Args.directory + 'readability.npz'
+        OutputTXT = Args.directory + 'order.txt'
+        utils.saveNPZ(np.asarray(AllScores), OutputNP)
+        utils.saveListTxt(AllFiles, OutputTXT)
+        print('[ INFO ]: Saved to', OutputNP, 'and', OutputTXT)
 
-        # Test = utils.loadNPZ(OutputPath)
+        # Test = utils.loadNPZ(OutputNP)
         # print(Test)
         # print(Test == np.asarray(AllScores))
+
+        # Files = utils.loadListTxt(OutputTXT)
+        # print(Files)
