@@ -61,6 +61,8 @@ if __name__ == '__main__':
     BestPaperScores = []
     NumAuthors = []
     PaperIDs = []
+    TitleLengthWords = []
+    TitleLengthCharacters = []
 
     # papers.csv contains the file names from order.txt, cvpr_2018.csv contains the paper IDs in the same order
     AllParsedPapers = []
@@ -68,8 +70,6 @@ if __name__ == '__main__':
         PapNameReader = csv.reader(PapNames)
         PapIDReader = csv.reader(PapIDs)
         for IDDetails, TitleDetails in zip(PapIDReader, PapNameReader):
-            # print(IDDetails)
-            # print(TitleDetails)
             # Extract title file name
             TitleIdx = [i for i, s in enumerate(TitleDetails) if 'content_cvpr_2018/papers/' in s]
             IDIdx = [i for i, s in enumerate(IDDetails) if 'content_cvpr_2018/CameraReady/' in s]
@@ -86,6 +86,8 @@ if __name__ == '__main__':
                 ValidReadScores.append(ReadScore)
                 NumAuthors.append(len(Authors))
                 PaperIDs.append(ID)
+                TitleLengthCharacters.append(len(TitleDetails[0]))
+                TitleLengthWords.append(len(TitleDetails[0].split(' ')))
                 Paper = CVPRPaper(ID, Title, Authors, Title, SupFName, 'Poster', ReadScore)
                 AllParsedPapers.append(Paper)
                 # if len(Authors) > 20:
@@ -98,6 +100,8 @@ if __name__ == '__main__':
     NumAuthors = np.asarray(NumAuthors)
     PaperIDs = np.asarray(PaperIDs)
     BestPaperScores = np.asarray(BestPaperScores)
+    TitleLengthCharacters = np.asarray(TitleLengthCharacters)
+    TitleLengthWords = np.asarray(TitleLengthWords)
     print('[ INFO ]: Average readability score of all accepted papers:', np.mean(ValidReadScores))
     print('[ INFO ]: Average readability score of 6 best papers:', np.mean(BestPaperScores))
 
@@ -110,4 +114,8 @@ if __name__ == '__main__':
     plt.scatter(ValidReadScores, NumAuthors)
     plt.figure(2)
     plt.scatter(ValidReadScores, PaperIDs)
+    plt.figure(3)
+    plt.scatter(ValidReadScores, TitleLengthWords)
+    plt.figure(4)
+    plt.scatter(ValidReadScores, TitleLengthCharacters)
     plt.show()
