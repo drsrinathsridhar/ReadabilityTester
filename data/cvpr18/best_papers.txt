@@ -1,0 +1,6 @@
+Zamir_Taskonomy_Disentangling_Task_CVPR_2018_paper.pdf
+Joo_Total_Capture_A_CVPR_2018_paper.pdf
+Zanfir_Deep_Learning_of_CVPR_2018_paper.pdf
+Su_SPLATNet_Sparse_Lattice_CVPR_2018_paper.pdf
+Bloesch_CodeSLAM_--_Learning_CVPR_2018_paper.pdf
+Mohapatra_Efficient_Optimization_for_CVPR_2018_paper.pdf
